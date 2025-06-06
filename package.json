@@ -8,6 +8,7 @@
     "build": "babel -d lib src/ -s inline",
     "build:watch": "watch 'npm run build' src",
     "prepublishOnly": "babel -d lib src/ -s inline",
+    "postinstall": "babel -d lib src/ -s inline",
     "pretest": "eslint spec",
     "test": "jest spec --coverage --collectCoverageFrom=src/**/*.js",
     "test:watch": "watch 'npm test' src spec",
