@@ -65,4 +65,20 @@ describe('Validator', () => {
       expect(client.logger.log).toHaveBeenCalledWith('Unrecognized option: clientId');
     });
   });
+
+  describe('.initializeHeaders', () => {
+    it('should initialize customHeaders with provided headers', () => {
+      let client = {};
+      let options = { headers: { 'X-Custom-Header': 'test-value' } };
+      validator.initializeHeaders(client, options);
+      expect(client.customHeaders).toEqual({ 'X-Custom-Header': 'test-value' });
+    });
+
+    it('should initialize customHeaders with empty object if no headers provided', () => {
+      let client = {};
+      let options = {};
+      validator.initializeHeaders(client, options);
+      expect(client.customHeaders).toEqual({});
+    });
+  });
 });

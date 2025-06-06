@@ -36,10 +36,11 @@ class Request {
     this.languageVersion = options.languageVersion;
     this.appId           = options.appId;
     this.appVersion      = options.appVersion;
-    this.headers         = {
+    this.customHeaders   = options.customHeaders || {};
+    this.headers         = Object.assign({
       'User-Agent' : this.userAgent(),
       'Accept' : 'application/json, application/vnd.amadeus+json'
-    };
+    }, this.customHeaders);
     this.ListHTTPOverride= [
       '/v2/shopping/flight-offers',
       '/v1/shopping/seatmaps',

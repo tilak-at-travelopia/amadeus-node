@@ -54,6 +54,59 @@ describe('Request', () => {
       });
     });
 
+    it('should merge custom headers with default headers', () => {
+      let customHeaders = { 'X-Custom-Header': 'test-value', 'X-Request-ID': '12345' };
+      let requestWithCustomHeaders = new Request({
+        host: host,
+        port: port,
+        ssl: ssl,
+        verb: verb,
+        path: path,
+        params: params,
+        bearerToken: bearerToken,
+        clientVersion: clientVersion,
+        languageVersion: languageVersion,
+        appId: appId,
+        appVersion: appVersion,
+        customHeaders: customHeaders
+      });
+
+      expect(requestWithCustomHeaders.customHeaders).toEqual(customHeaders);
+      expect(requestWithCustomHeaders.headers).toEqual({
+        'Accept': 'application/json, application/vnd.amadeus+json',
+        'User-Agent': 'amadeus-node/1.2.3 node/2.3.4 amadeus-cli/3.4.5',
+        'Authorization': 'Bearer token',
+        'Content-Type': 'application/vnd.amadeus+json',
+        'X-Custom-Header': 'test-value',
+        'X-Request-ID': '12345'
+      });
+    });
+
+    it('should allow custom headers to override default headers', () => {
+      let customHeaders = { 'Accept': 'application/custom+json', 'X-Custom-Header': 'test-value' };
+      let requestWithCustomHeaders = new Request({
+        host: host,
+        port: port,
+        ssl: ssl,
+        verb: verb,
+        path: path,
+        params: params,
+        bearerToken: bearerToken,
+        clientVersion: clientVersion,
+        languageVersion: languageVersion,
+        appId: appId,
+        appVersion: appVersion,
+        customHeaders: customHeaders
+      });
+
+      expect(requestWithCustomHeaders.headers['Accept']).toBe('application/custom+json');
+      expect(requestWithCustomHeaders.headers['X-Custom-Header']).toBe('test-value');
+    });
+
+    it('should default to empty object when no custom headers provided', () => {
+      expect(request.customHeaders).toEqual({});
+    });
+
     describe('.userAgent', () => {
       it('should build the user agent', () => {
         request.appId = undefined;

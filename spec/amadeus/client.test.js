@@ -75,6 +75,17 @@ describe('Client', () => {
       expect(client.http).toBe(http);
     });
 
+    it('should allow for setting custom headers', () => {
+      let customHeaders = { 'X-Custom-Header': 'test-value', 'X-Request-ID': '12345' };
+      let options = { 'clientId': '123', 'clientSecret': '234', 'headers': customHeaders };
+      let client = new Client(options);
+      expect(client.customHeaders).toEqual(customHeaders);
+    });
+
+    it('should default to empty object when no headers provided', () => {
+      expect(client.customHeaders).toEqual({});
+    });
+
     describe('.get', () => {
       it('should create a new request and call it', () => {
         // mock the Client.call() method

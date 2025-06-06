@@ -178,7 +178,8 @@ class Client {
       appId: this.customAppId,
       appVersion: this.customAppVersion,
       port: this.port,
-      ssl: this.ssl
+      ssl: this.ssl,
+      customHeaders: this.customHeaders
     });
   }
 

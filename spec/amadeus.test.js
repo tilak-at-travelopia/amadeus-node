@@ -26,6 +26,12 @@ describe('Amadeus', () => {
       expect(() => { new Amadeus(); }).toThrowError();
     });
 
+    it('should allow custom headers to be passed through to client', () => {
+      let customHeaders = { 'X-Custom-Header': 'test-value', 'X-Request-ID': '12345' };
+      let amadeusWithHeaders = new Amadeus(Object.assign({}, credentials, { headers: customHeaders }));
+      expect(amadeusWithHeaders.client.customHeaders).toEqual(customHeaders);
+    });
+
     it('should have an client property', () => {
       expect(amadeus.client).toBeInstanceOf(Client);
     });
