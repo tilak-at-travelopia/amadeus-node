@@ -7,7 +7,7 @@
     "prebuild": "npm run lint:src & npm run docs",
     "build": "babel -d lib src/ -s inline",
     "build:watch": "watch 'npm run build' src",
-    "prepare": "babel -d lib src/ -s inline",
+    "prepare": "husky install",
     "prepublishOnly": "babel -d lib src/ -s inline",
     "pretest": "eslint spec",
     "test": "jest spec --coverage --collectCoverageFrom=src/**/*.js",
@@ -53,16 +53,17 @@
     "Gustavo Giunco Bertoldi"
   ],
   "dependencies": {
-    "qs": "^6.11.0",
+    "qs": "^6.11.0"
+  },
+  "devDependencies": {
     "@babel/cli": "^7.18.6",
     "@babel/core": "^7.18.6",
     "@babel/preset-env": "^7.18.6",
-    "babel-plugin-add-module-exports": "^1.0.4"
-  },
-  "devDependencies": {
+    "babel-plugin-add-module-exports": "^1.0.4",
     "babel-preset-env": "^1.7.0",
     "documentation": "^13.2.5",
     "eslint": "^4.16.0",
+    "husky": "^9.1.7",
     "jest": "^24.8.0",
     "merge": "^2.1.1",
     "watch": "^1.0.2"
