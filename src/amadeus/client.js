@@ -131,7 +131,6 @@ class Client {
    */
   unauthenticatedRequest(verb, path, params, bearerToken = null) {
     let request = this.buildRequest(verb, path, params, bearerToken);
-    this.log(request);
     let emitter = new EventEmitter();
     let promise = this.buildPromise(emitter);
 
@@ -148,8 +147,6 @@ class Client {
    */
   execute(request, emitter) {
     let http_request = this.http.request(request.options());
-    this.log(http_request);
-    this.log(request.options());
     let listener = new Listener(request, emitter, this);
     http_request.on('response', listener.onResponse.bind(listener));
     http_request.on('error',    listener.onError.bind(listener));
