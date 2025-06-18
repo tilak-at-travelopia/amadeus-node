@@ -165,6 +165,69 @@ class Amadeus {
    * @return {Promise.<Response,ResponseError>} a Promise
    */
   last(response)     { return this.pagination.page('last', response); }
+
+  /**
+   * Set custom headers that will be sent with every API request.
+   * This method allows you to update headers dynamically after creating
+   * the Amadeus instance. New headers will be merged with existing ones.
+   *
+   * ```js
+   * amadeus.setCustomHeaders({
+   *   'X-Custom-Header': 'new-value',
+   *   'X-Request-ID': '67890'
+   * });
+   * ```
+   *
+   * @param {Object} headers - An object containing header key-value pairs
+   */
+  setCustomHeaders(headers = {}) {
+    if (typeof headers !== 'object' || headers === null) {
+      throw new Error('Headers must be an object');
+    }
+    this.client.customHeaders = Object.assign(this.client.customHeaders || {}, headers);
+  }
+
+  /**
+   * Get the current custom headers that are sent with API requests.
+   *
+   * ```js
+   * const currentHeaders = amadeus.getCustomHeaders();
+   * console.log(currentHeaders);
+   * ```
+   *
+   * @return {Object} The current custom headers object
+   */
+  getCustomHeaders() {
+    return this.client.customHeaders || {};
+  }
+
+  /**
+   * Remove specific custom headers or clear all custom headers.
+   *
+   * ```js
+   * // Remove specific headers
+   * amadeus.removeCustomHeaders(['X-Header1', 'X-Header2']);
+   * 
+   * // Clear all custom headers
+   * amadeus.removeCustomHeaders();
+   * ```
+   *
+   * @param {Array<string>} [headerNames] - Array of header names to remove. If not provided, all headers are cleared.
+   */
+  removeCustomHeaders(headerNames = null) {
+    if (headerNames === null) {
+      // Clear all headers
+      this.client.customHeaders = {};
+    } else if (Array.isArray(headerNames)) {
+      // Remove specific headers
+      const currentHeaders = this.client.customHeaders || {};
+      headerNames.forEach(headerName => {
+        delete currentHeaders[headerName];
+      });
+    } else {
+      throw new Error('headerNames must be an array or null');
+    }
+  }
 }
 
 

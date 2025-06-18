@@ -17,7 +17,8 @@ const RECOGNIZED_OPTIONS = [
   'customAppVersion',
   'http',
   'ssl',
-  'port'
+  'port',
+  'headers'
 ];
 
 /**
@@ -40,6 +41,7 @@ class Validator {
     this.initializeHost(client, options);
     this.initializeCustomApp(client, options);
     this.initializeHttp(client, options);
+    this.initializeHeaders(client, options);
 
     this.warnOnUnrecognizedOptions(options, client, RECOGNIZED_OPTIONS);
   }
@@ -71,6 +73,10 @@ class Validator {
   initializeHttp(client, options) {
     let network = client.ssl ? https : http;
     client.http = this.initOptional('http', options, network);
+  }
+
+  initializeHeaders(client, options) {
+    client.customHeaders = this.initOptional('headers', options, {});
   }
 
   initRequired(key, options) {

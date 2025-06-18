@@ -131,7 +131,6 @@ class Client {
    */
   unauthenticatedRequest(verb, path, params, bearerToken = null) {
     let request = this.buildRequest(verb, path, params, bearerToken);
-    this.log(request);
     let emitter = new EventEmitter();
     let promise = this.buildPromise(emitter);
 
@@ -178,7 +177,8 @@ class Client {
       appId: this.customAppId,
       appVersion: this.customAppVersion,
       port: this.port,
-      ssl: this.ssl
+      ssl: this.ssl,
+      customHeaders: this.customHeaders
     });
   }
 
