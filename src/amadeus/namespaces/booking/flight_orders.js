@@ -76,8 +76,8 @@ class FlightOrders {
    * });
    * ```
    */
-  patch(params = {}) {
-    return this.client.patch('/v1/booking/flight-orders', params);
+  patch(orderId, params = {}) {
+    return this.client.patch(`/v1/booking/flight-orders/${orderId}`, params);
   }
 }
 
