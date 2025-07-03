@@ -78,6 +78,21 @@ class Client {
   }
 
   /**
+   * Make an authenticated PATCH API call.
+   *
+   * ```js
+   * amadeus.client.patch('/v2/foo/bar', { some: 'data' });
+   * ```
+   * @param {string} path the full path of the API endpoint
+   * @param {Object} [params={}] the PATCH parameters
+   * @return {Promise.<Response,ResponseError>} a Promise
+   */
+  patch(path, params = {}) {
+    const stringifiedParams = typeof params === 'string' ? params : JSON.stringify(params);
+    return this.request('PATCH', path, stringifiedParams);
+  }
+
+  /**
    * Make an authenticated DELETE API call.
    *
    * ```js
