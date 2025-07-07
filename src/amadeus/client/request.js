@@ -84,7 +84,7 @@ class Request {
    * @protected
    */
   body() {
-    if (this.verb !== 'POST') { return ''; }
+    if (this.verb !== 'POST' && this.verb !== 'PATCH') { return ''; }
     else {
       if (!this.bearerToken) {
         return qs.stringify(this.params);
@@ -115,7 +115,7 @@ class Request {
    * @private
    */
   fullQueryPath() {
-    if (this.verb === 'POST') { return this.path; }
+    if (this.verb === 'POST' || this.verb === 'PATCH') { return this.path; }
     else { return `${this.path}?${qs.stringify(this.params, { arrayFormat: 'comma' })}`; }
   }
 
