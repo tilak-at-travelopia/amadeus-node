@@ -160,10 +160,12 @@ class Listener {
         this.client.logger.log('Headers:', response.headers);
       }
 
-      this.client.logger.log('Body:', response.body);
+      this.client.logger.log('Body:');
+      this.client.logger.log(util.inspect(response.body, false, null));
 
       if (response.parsed && response.result) {
-        this.client.logger.log('Parsed Result:', response.result);
+        this.client.logger.log('Parsed Result:');
+        this.client.logger.log(util.inspect(response.result, false, null));
       }
 
       if (error) {
