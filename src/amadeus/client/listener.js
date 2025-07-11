@@ -161,11 +161,11 @@ class Listener {
       }
 
       this.client.logger.log('Body:');
-      this.client.logger.log(util.inspect(response.body, false, null));
+      this.client.logger.log(JSON.stringify(response.body, null, 2));
 
       if (response.parsed && response.result) {
         this.client.logger.log('Parsed Result:');
-        this.client.logger.log(util.inspect(response.result, false, null));
+        this.client.logger.log(JSON.stringify(response.result, null, 2));
       }
 
       if (error) {
