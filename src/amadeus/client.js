@@ -73,7 +73,8 @@ class Client {
    * @return {Promise.<Response,ResponseError>} a Promise
    */
   post(path, params = {}) {
-    const stringifiedParams = typeof params === 'string' ? params : JSON.stringify(params);
+    const stringifiedParams =
+      typeof params === 'string' ? params : JSON.stringify(params);
     return this.request('POST', path, stringifiedParams);
   }
 
@@ -88,7 +89,8 @@ class Client {
    * @return {Promise.<Response,ResponseError>} a Promise
    */
   patch(path, params = {}) {
-    const stringifiedParams = typeof params === 'string' ? params : JSON.stringify(params);
+    const stringifiedParams =
+      typeof params === 'string' ? params : JSON.stringify(params);
     return this.request('PATCH', path, stringifiedParams);
   }
 
@@ -161,10 +163,27 @@ class Client {
    * @private
    */
   execute(request, emitter) {
+    // Log the request details
+    if (this.debug()) {
+      this.logger.log('Request:');
+      this.logger.log(`${request.verb} ${request.path}`);
+      this.logger.log('Headers:', request.options().headers);
+
+      // Log request body
+      const body = request.body();
+      if (body) {
+        this.logger.log('Body:', body);
+      }
+
+      if (request.params && Object.keys(request.params).length > 0) {
+        this.logger.log('Params:', request.params);
+      }
+    }
+
     let http_request = this.http.request(request.options());
     let listener = new Listener(request, emitter, this);
     http_request.on('response', listener.onResponse.bind(listener));
-    http_request.on('error',    listener.onError.bind(listener));
+    http_request.on('error', listener.onError.bind(listener));
     http_request.write(request.body());
     http_request.end();
   }
@@ -193,7 +212,7 @@ class Client {
       appVersion: this.customAppVersion,
       port: this.port,
       ssl: this.ssl,
-      customHeaders: this.customHeaders
+      customHeaders: this.customHeaders,
     });
   }
 
@@ -210,7 +229,6 @@ class Client {
       emitter.on('reject', error => reject(error));
     });
   }
-
 
   /**
    * Logs the request, when in debug mode

@@ -1,5 +1,5 @@
 import Response from './response';
-import util     from 'util';
+import util from 'util';
 
 import {
   ServerError,
@@ -8,7 +8,7 @@ import {
   ParserError,
   UnknownError,
   NetworkError,
-  AuthenticationError
+  AuthenticationError,
 } from './errors';
 
 
@@ -25,11 +25,10 @@ class Listener {
   constructor(request, emitter, client) {
     this.request = request;
     this.emitter = emitter;
-    this.client  = client;
+    this.client = client;
   }
 
   // PROTECTED
-
 
   /**
    * Listens to various events on the http_response object, listening for data,
@@ -43,8 +42,8 @@ class Listener {
   onResponse(http_response) {
     let response = new Response(http_response, this.request);
 
-    http_response.on('data',  response.addChunk.bind(response));
-    http_response.on('end',   this.onEnd(response).bind(this));
+    http_response.on('data', response.addChunk.bind(response));
+    http_response.on('end', this.onEnd(response).bind(this));
     http_response.on('close', this.onNetworkError(response).bind(this));
     http_response.on('error', this.onNetworkError(response).bind(this));
   }
@@ -65,7 +64,6 @@ class Listener {
 
   // PRIVATE
 
-
   /**
    * When the connection ends, check if the response can be parsed or not and
    * act accordingly.
@@ -75,8 +73,11 @@ class Listener {
   onEnd(response) {
     return () => {
       response.parse();
-      if (response.success()) { this.onSuccess(response); }
-      else { this.onFail(response);  }
+      if (response.success()) {
+        this.onSuccess(response);
+      } else {
+        this.onFail(response);
+      }
     };
   }
 
@@ -104,21 +105,27 @@ class Listener {
     this.emitter.emit('reject', error);
   }
 
-
   /**
    * Find the right error for the given response.
    *
    * @param {Response} reponse
    * @returns {ResponseError}
    */
-  errorFor({statusCode, parsed}) {
+  errorFor({ statusCode, parsed }) {
     let error = null;
-    if (statusCode >= 500) { error = ServerError; }
-    else if (statusCode === 401) { error = AuthenticationError; }
-    else if (statusCode === 404) { error = NotFoundError; }
-    else if (statusCode >= 400) { error = ClientError; }
-    else if (!parsed) { error = ParserError; }
-    else { error = UnknownError; }
+    if (statusCode >= 500) {
+      error = ServerError;
+    } else if (statusCode === 401) {
+      error = AuthenticationError;
+    } else if (statusCode === 404) {
+      error = NotFoundError;
+    } else if (statusCode >= 400) {
+      error = ClientError;
+    } else if (!parsed) {
+      error = ParserError;
+    } else {
+      error = UnknownError;
+    }
     return error;
   }
 
@@ -146,7 +153,22 @@ class Listener {
   log(response, error) {
     if (this.client.debug()) {
       /* istanbul ignore next */
-      this.client.logger.log(util.inspect(response, false, null));
+      this.client.logger.log('Response:');
+      this.client.logger.log(`Status: ${response.statusCode}`);
+
+      if (response.headers) {
+        this.client.logger.log('Headers:', response.headers);
+      }
+
+      this.client.logger.log('Body:', response.body);
+
+      if (response.parsed && response.result) {
+        this.client.logger.log('Parsed Result:', response.result);
+      }
+
+      if (error) {
+        this.client.logger.log('Error:', error.code, error.description);
+      }
     }
     if (!this.client.debug() && this.client.warn() && error) {
       /* istanbul ignore next */
