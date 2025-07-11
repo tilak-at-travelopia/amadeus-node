@@ -21,23 +21,26 @@ npm install amadeus --save
 To make your first API call, you will need to [register](https://developers.amadeus.com/register) for an Amadeus Developer Account and [set up your first application](https://developers.amadeus.com/my-apps).
 
 ```js
-const Amadeus = require('amadeus');
+const Amadeus = require("amadeus");
 
 const amadeus = new Amadeus({
-  clientId: 'REPLACE_BY_YOUR_API_KEY',
-  clientSecret: 'REPLACE_BY_YOUR_API_SECRET'
+  clientId: "REPLACE_BY_YOUR_API_KEY",
+  clientSecret: "REPLACE_BY_YOUR_API_SECRET",
 });
 
-amadeus.shopping.flightOffersSearch.get({
-    originLocationCode: 'SYD',
-    destinationLocationCode: 'BKK',
-    departureDate: '2022-06-01',
-    adults: '2'
-}).then(function(response){
-  console.log(response.data);
-}).catch(function(responseError){
-  console.log(responseError.code);
-});
+amadeus.shopping.flightOffersSearch
+  .get({
+    originLocationCode: "SYD",
+    destinationLocationCode: "BKK",
+    departureDate: "2022-06-01",
+    adults: "2",
+  })
+  .then(function (response) {
+    console.log(response.data);
+  })
+  .catch(function (responseError) {
+    console.log(responseError.code);
+  });
 ```
 
 ## Examples
@@ -51,8 +54,8 @@ The client can be initialized directly.
 ```js
 // Initialize using parameters
 const amadeus = new Amadeus({
-  clientId: 'REPLACE_BY_YOUR_API_KEY',
-  clientSecret: 'REPLACE_BY_YOUR_API_SECRET'
+  clientId: "REPLACE_BY_YOUR_API_KEY",
+  clientSecret: "REPLACE_BY_YOUR_API_SECRET",
 });
 ```
 
@@ -68,7 +71,7 @@ By default, the SDK environment is set to `test` environment. To switch to a `pr
 
 ```js
 const amadeus = new Amadeus({
-  hostname: 'production'
+  hostname: "production",
 });
 ```
 
@@ -76,21 +79,20 @@ const amadeus = new Amadeus({
 
 Amadeus has a large set of APIs, and our documentation is here to get you started today. Head over to our [reference documentation](https://amadeus4dev.github.io/amadeus-node/) for in-depth information about every SDK method, its arguments and return types.
 
-
-  * [Get Started](https://amadeus4dev.github.io/amadeus-node/)
-  * [Find an Airport](https://amadeus4dev.github.io/amadeus-node/#airports)
-  * [Find a Flight](https://amadeus4dev.github.io/amadeus-node/#flightofferssearch)
-  * [Get Flight Inspiration](https://amadeus4dev.github.io/amadeus-node/#flightdestinations)
+- [Get Started](https://amadeus4dev.github.io/amadeus-node/)
+- [Find an Airport](https://amadeus4dev.github.io/amadeus-node/#airports)
+- [Find a Flight](https://amadeus4dev.github.io/amadeus-node/#flightofferssearch)
+- [Get Flight Inspiration](https://amadeus4dev.github.io/amadeus-node/#flightdestinations)
 
 ## Making API calls
 
 This library conveniently maps every API path to a similar path. For example, `GET /v2/reference-data/urls/checkin-links?airlineCode=BA` would be:
 
 ```js
-amadeus.referenceData.urls.checkinLinks.get({ airlineCode: 'BA' });
+amadeus.referenceData.urls.checkinLinks.get({ airlineCode: "BA" });
 ```
 
-Similarly, to select a resource by ID, you can pass in the ID to the **singular** path. For example,  `GET /v1/shopping/hotelOffers/123/` would be:
+Similarly, to select a resource by ID, you can pass in the ID to the **singular** path. For example, `GET /v1/shopping/hotelOffers/123/` would be:
 
 ```js
 amadeus.shopping.hotelOffer('123').get(...);
@@ -99,12 +101,15 @@ amadeus.shopping.hotelOffer('123').get(...);
 You can make any arbitrary `GET` API call directly with the `.client.get` method as well:
 
 ```js
-amadeus.client.get('/v2/reference-data/urls/checkin-links', { airlineCode: 'BA' });
+amadeus.client.get("/v2/reference-data/urls/checkin-links", {
+  airlineCode: "BA",
+});
 ```
 
 Or, with a `POST` using `.client.post` method:
+
 ```js
-amadeus.client.post('/v1/shopping/flight-offers/pricing', { data });
+amadeus.client.post("/v1/shopping/flight-offers/pricing", { data });
 ```
 
 ## Promises
@@ -116,17 +121,20 @@ Every resolved API call returns a `Response` object containing a `body` attribut
 For a failed API call, it returns a `ResponseError`object containing the (parsed or unparsed) response, the request, and an error code.
 
 ```js
-amadeus.referenceData.urls.checkinLinks.get({
-  airlineCode: 'BA'
-}).then(function(response){
-  console.log(response.body);   //=> The raw body
-  console.log(response.result); //=> The fully parsed result
-  console.log(response.data);   //=> The data attribute taken from the result
-}).catch(function(error){
-  console.log(error.response); //=> The response object with (un)parsed data
-  console.log(error.response.request); //=> The details of the request made
-  console.log(error.code); //=> A unique error code to identify the type of error
-});
+amadeus.referenceData.urls.checkinLinks
+  .get({
+    airlineCode: "BA",
+  })
+  .then(function (response) {
+    console.log(response.body); //=> The raw body
+    console.log(response.result); //=> The fully parsed result
+    console.log(response.data); //=> The data attribute taken from the result
+  })
+  .catch(function (error) {
+    console.log(error.response); //=> The response object with (un)parsed data
+    console.log(error.response.request); //=> The details of the request made
+    console.log(error.code); //=> A unique error code to identify the type of error
+  });
 ```
 
 ## Pagination
@@ -134,15 +142,18 @@ amadeus.referenceData.urls.checkinLinks.get({
 If an API endpoint supports pagination, the other pages are available under the `.next`, `.previous`, `.last` and `.first` methods.
 
 ```js
-amadeus.referenceData.locations.get({
-  keyword: 'LON',
-  subType: 'AIRPORT,CITY'
-}).then(function(response){
-  console.log(response.data); // first page
-  return amadeus.next(response);
-}).then(function(nextResponse){
-  console.log(nextResponse.data); // second page
-});
+amadeus.referenceData.locations
+  .get({
+    keyword: "LON",
+    subType: "AIRPORT,CITY",
+  })
+  .then(function (response) {
+    console.log(response.data); // first page
+    return amadeus.next(response);
+  })
+  .then(function (nextResponse) {
+    console.log(nextResponse.data); // second page
+  });
 ```
 
 If a page is not available, the response will resolve to `null`.
@@ -153,9 +164,9 @@ The SDK makes it easy to add your own logger that is compatible with the default
 
 ```js
 const amadeus = new Amadeus({
-  clientId: 'REPLACE_BY_YOUR_API_KEY',
-  clientSecret: 'REPLACE_BY_YOUR_API_SECRET',
-  logger: new MyConsole()
+  clientId: "REPLACE_BY_YOUR_API_KEY",
+  clientSecret: "REPLACE_BY_YOUR_API_SECRET",
+  logger: new MyConsole(),
 });
 ```
 
@@ -163,16 +174,31 @@ Additionally, to enable more verbose logging, you can set the appropriate level 
 
 ```js
 const amadeus = new Amadeus({
-  clientId: 'REPLACE_BY_YOUR_API_KEY',
-  clientSecret: 'REPLACE_BY_YOUR_API_SECRET',
-  logLevel: 'debug'
+  clientId: "REPLACE_BY_YOUR_API_KEY",
+  clientSecret: "REPLACE_BY_YOUR_API_SECRET",
+  logLevel: "debug",
 });
 ```
+
+### Saving Requests and Responses to Files
+
+You can enable saving API requests and responses to JSON files for debugging or auditing purposes:
+
+```js
+const amadeus = new Amadeus({
+  clientId: "REPLACE_BY_YOUR_API_KEY",
+  clientSecret: "REPLACE_BY_YOUR_API_SECRET",
+  saveToFile: true, // Enable saving requests/responses to files
+  logDirectory: "my-amadeus-logs", // Optional: specify a custom log directory (default: 'logs')
+});
+```
+
+When enabled, each request and response will be saved as separate JSON files in the specified directory. Files are named with the HTTP method, sanitized path, and timestamp to make them easily identifiable.
 
 ## List of supported endpoints
 
 ```js
-//Airport Routes 
+//Airport Routes
 amadeus.airport.directDestinations.get({
      departureAirportCode: 'CDG',
 })
@@ -228,7 +254,7 @@ amadeus.shopping.flightOffersSearch.get({
 });
 
 // Flight Offers Price with additional parameters
-// for example: check additional baggage options 
+// for example: check additional baggage options
 amadeus.shopping.flightOffers.pricing.post(body ,{include: 'bags'});
 
 // Flight Create Orders
@@ -278,7 +304,7 @@ amadeus.shopping.seatmaps.get({
 // Flight Availabilities Search
 amadeus.shopping.availability.flightAvailabilities.post(body);
 
-// Branded Fares Upsell 
+// Branded Fares Upsell
 amadeus.shopping.flightOffers.upselling.post(body);
 
 // Flight Choice Prediction
@@ -341,7 +367,7 @@ amadeus.travel.analytics.airTraffic.busiestPeriod.get({
 })
 
 // City Search API
-// finds cities that match a specific word or string of letters. 
+// finds cities that match a specific word or string of letters.
 // Return a list of cities matching a keyword 'Paris'
 amadeus.referenceData.locations.cities.get({
   keyword: 'Paris'
@@ -354,7 +380,7 @@ amadeus.referenceData.locations.hotel.get({
      subType: 'HOTEL_GDS'
 })
 
-//Hotel List API 
+//Hotel List API
 //Get list of hotels by city code
 amadeus.referenceData.locations.hotels.byCity.get({
       cityCode: 'PAR'
