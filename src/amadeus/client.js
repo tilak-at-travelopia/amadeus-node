@@ -177,7 +177,11 @@ class Client {
         this.logger.log("Body:", body);
       }
 
-      if (request.params && Object.keys(request.params).length > 0) {
+      if (
+        request.verb === "GET" &&
+        request.params &&
+        Object.keys(request.params).length > 0
+      ) {
         this.logger.log("Params:", request.params);
       }
     }

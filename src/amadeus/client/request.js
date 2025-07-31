@@ -51,7 +51,7 @@ class Request {
     ];
     this.addAuthorizationHeader();
     this.addContentTypeHeader();
-    this.addHTTPOverrideHeader();
+    // this.addHTTPOverrideHeader();
   }
 
   // PROTECTED
