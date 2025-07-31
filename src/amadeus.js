@@ -207,7 +207,7 @@ class Amadeus {
    * ```js
    * // Remove specific headers
    * amadeus.removeCustomHeaders(['X-Header1', 'X-Header2']);
-   * 
+   *
    * // Clear all custom headers
    * amadeus.removeCustomHeaders();
    * ```

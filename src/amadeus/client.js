@@ -1,12 +1,12 @@
-import EventEmitter from 'events';
-import util         from 'util';
+import EventEmitter from "events";
+import util from "util";
 
-import AccessToken from './client/access_token';
-import Listener    from './client/listener';
-import Request     from './client/request';
-import Validator   from './client/validator';
+import AccessToken from "./client/access_token";
+import Listener from "./client/listener";
+import Request from "./client/request";
+import Validator from "./client/validator";
 
-import pkg         from '../../package.json';
+import pkg from "../../package.json";
 
 /**
  * A convenient wrapper around the API, allowing for generic, authenticated and
@@ -40,6 +40,8 @@ import pkg         from '../../package.json';
  * @property {Object} http the Node/HTTP(S)-compatible client used to make
  *  requests
  * @property {number} version The version of this API client
+ * @property {boolean} saveToFile whether to save request and response data to files
+ * @property {string} logDirectory the directory to save request and response logs
  */
 class Client {
   constructor(options = {}) {
@@ -59,7 +61,7 @@ class Client {
    * @return {Promise.<Response,ResponseError>} a Promise
    */
   get(path, params = {}) {
-    return this.request('GET', path, params);
+    return this.request("GET", path, params);
   }
 
   /**
@@ -73,8 +75,25 @@ class Client {
    * @return {Promise.<Response,ResponseError>} a Promise
    */
   post(path, params = {}) {
-    const stringifiedParams = typeof params === 'string' ? params : JSON.stringify(params);
-    return this.request('POST', path, stringifiedParams);
+    const stringifiedParams =
+      typeof params === "string" ? params : JSON.stringify(params);
+    return this.request("POST", path, stringifiedParams);
+  }
+
+  /**
+   * Make an authenticated PATCH API call.
+   *
+   * ```js
+   * amadeus.client.patch('/v2/foo/bar', { some: 'data' });
+   * ```
+   * @param {string} path the full path of the API endpoint
+   * @param {Object} [params={}] the PATCH parameters
+   * @return {Promise.<Response,ResponseError>} a Promise
+   */
+  patch(path, params = {}) {
+    const stringifiedParams =
+      typeof params === "string" ? params : JSON.stringify(params);
+    return this.request("PATCH", path, stringifiedParams);
   }
 
   /**
@@ -88,7 +107,7 @@ class Client {
    * @return {Promise.<Response,ResponseError>} a Promise
    */
   delete(path, params = {}) {
-    return this.request('DELETE', path, params);
+    return this.request("DELETE", path, params);
   }
 
   // PROTECTED
@@ -146,10 +165,31 @@ class Client {
    * @private
    */
   execute(request, emitter) {
+    // Log the request details
+    if (this.debug()) {
+      this.logger.log("Request:");
+      this.logger.log(`${request.verb} ${request.path}`);
+      this.logger.log("Headers:", request.options().headers);
+
+      // Log request body
+      const body = request.body();
+      if (body) {
+        this.logger.log("Body:", body);
+      }
+
+      if (
+        request.verb === "GET" &&
+        request.params &&
+        Object.keys(request.params).length > 0
+      ) {
+        this.logger.log("Params:", request.params);
+      }
+    }
+
     let http_request = this.http.request(request.options());
     let listener = new Listener(request, emitter, this);
-    http_request.on('response', listener.onResponse.bind(listener));
-    http_request.on('error',    listener.onError.bind(listener));
+    http_request.on("response", listener.onResponse.bind(listener));
+    http_request.on("error", listener.onError.bind(listener));
     http_request.write(request.body());
     http_request.end();
   }
@@ -178,7 +218,7 @@ class Client {
       appVersion: this.customAppVersion,
       port: this.port,
       ssl: this.ssl,
-      customHeaders: this.customHeaders
+      customHeaders: this.customHeaders,
     });
   }
 
@@ -191,11 +231,10 @@ class Client {
    */
   buildPromise(emitter) {
     return new Promise((resolve, reject) => {
-      emitter.on('resolve', response => resolve(response));
-      emitter.on('reject', error => reject(error));
+      emitter.on("resolve", (response) => resolve(response));
+      emitter.on("reject", (error) => reject(error));
     });
   }
-
 
   /**
    * Logs the request, when in debug mode
@@ -205,7 +244,9 @@ class Client {
    */
   log(request) {
     /* istanbul ignore next */
-    if(this.debug()) { this.logger.log(util.inspect(request, false, null)); }
+    if (this.debug()) {
+      this.logger.log(util.inspect(request, false, null));
+    }
   }
 
   /**
@@ -214,7 +255,7 @@ class Client {
    * @return {boolean}
    */
   debug() {
-    return this.logLevel == 'debug';
+    return this.logLevel == "debug";
   }
 
   /**
@@ -223,7 +264,7 @@ class Client {
    * @return {boolean}
    */
   warn() {
-    return this.logLevel == 'warn' || this.debug();
+    return this.logLevel == "warn" || this.debug();
   }
 }
 

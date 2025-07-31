@@ -35,6 +35,50 @@ class FlightOrders {
   post(params = {}) {
     return this.client.post('/v1/booking/flight-orders', params);
   }
+
+  /**
+   * To book the selected flight-offer and create a flight-order
+   *
+   * @param {Object} params
+   * @return {Promise.<Response,ResponseError>} a Promise
+   *
+   * To update the flight-order to add seats, travelers, or other information
+   *
+   * ```js
+   * amadeus.booking.flightOrders.patch({
+   *  'type': 'flight-order',
+   *  'flightOffers': [
+   *    {
+   *      'type': 'flight-offer',
+   *      'id': '1'
+   *      'travelerPricings': [
+   *        {
+   *          'travelerId': '1',
+   *          'fareDetailsBySegment': [
+   *              {
+   *                'segmentId': '20',
+   *                'additionalServices': {
+   *                  'chargeableSeatNumber': '28A'
+   *                }
+   *              },
+   *              {
+   *                'segmentId': '30',
+   *                'additionalServices': {
+   *                  'chargeableSeatNumber': '12C'
+   *                }
+   *              }
+   *            ]
+   *          }
+   *        }
+   *      ]
+   *    }
+   *  ]
+   * });
+   * ```
+   */
+  patch(orderId, params = {}) {
+    return this.client.patch(`/v1/booking/flight-orders/${orderId}`, params);
+  }
 }
 
 export default FlightOrders;

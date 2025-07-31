@@ -1,9 +1,9 @@
-import https     from 'https';
-import http      from 'http';
+import https from 'https';
+import http from 'http';
 
 const HOSTS = {
-  'test'       : 'test.api.amadeus.com',
-  'production' : 'api.amadeus.com'
+  test: 'test.api.amadeus.com',
+  production: 'api.amadeus.com',
 };
 
 const RECOGNIZED_OPTIONS = [
@@ -18,7 +18,9 @@ const RECOGNIZED_OPTIONS = [
   'http',
   'ssl',
   'port',
-  'headers'
+  'headers',
+  'saveToFile',
+  'logDirectory',
 ];
 
 /**
@@ -26,7 +28,6 @@ const RECOGNIZED_OPTIONS = [
  * @protected
  */
 class Validator {
-
   /**
    * Initialise the client's default value, ensuring the required values are
    * present
@@ -42,6 +43,7 @@ class Validator {
     this.initializeCustomApp(client, options);
     this.initializeHttp(client, options);
     this.initializeHeaders(client, options);
+    this.initializeFileLogging(client, options);
 
     this.warnOnUnrecognizedOptions(options, client, RECOGNIZED_OPTIONS);
   }
@@ -54,15 +56,15 @@ class Validator {
   }
 
   initializeLogger(client, options) {
-    client.logger    = this.initOptional('logger', options, console);
+    client.logger = this.initOptional('logger', options, console);
     client.logLevel = this.initOptional('logLevel', options, 'silent');
   }
 
   initializeHost(client, options) {
     let hostname = this.initOptional('hostname', options, 'test');
-    client.host  = this.initOptional('host', options, HOSTS[hostname]);
-    client.port  = this.initOptional('port', options, 443);
-    client.ssl   = this.initOptional('ssl', options, true);
+    client.host = this.initOptional('host', options, HOSTS[hostname]);
+    client.port = this.initOptional('port', options, 443);
+    client.ssl = this.initOptional('ssl', options, true);
   }
 
   initializeCustomApp(client, options) {
@@ -79,6 +81,11 @@ class Validator {
     client.customHeaders = this.initOptional('headers', options, {});
   }
 
+  initializeFileLogging(client, options) {
+    client.saveToFile = this.initOptional('saveToFile', options, false);
+    client.logDirectory = this.initOptional('logDirectory', options, 'logs');
+  }
+
   initRequired(key, options) {
     let result = this.initOptional(key, options);
     if (!result) throw new ArgumentError(`Missing required argument: ${key}`);
@@ -87,7 +94,9 @@ class Validator {
 
   initOptional(key, options, fallback = null) {
     //Env variables names expected to be in SNAKE_CASE and uppercase
-    let envKey = `AMADEUS_${key.replace(/[A-Z]/g, c => `_${c.toLowerCase()}`).toUpperCase()}`;
+    let envKey = `AMADEUS_${key
+      .replace(/[A-Z]/g, (c) => `_${c.toLowerCase()}`)
+      .toUpperCase()}`;
     let value = options[key] || process.env[envKey] || fallback;
     return value;
   }
